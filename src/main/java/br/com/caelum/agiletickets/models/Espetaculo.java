@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
@@ -100,9 +101,11 @@ public class Espetaculo {
 
 		ArrayList<Sessao> sessoes = new ArrayList<Sessao>();
 		
-		Sessao sessao = new Sessao();
-		sessao.setInicio(inicio.toDateTime(horario));
-		sessoes.add(sessao);
+		for (int i = 0; i <= Days.daysBetween(inicio, fim).getDays() ; i++) {
+			Sessao sessao = new Sessao();
+			sessao.setInicio(inicio.plusDays(i).toDateTime(horario));
+			sessoes.add(sessao);			
+		}
 		
 		return sessoes;
 	}

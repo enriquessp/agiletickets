@@ -87,8 +87,27 @@ public class EspetaculoTest {
 		
 		List<Sessao> sessoes = show.criaSessoes(inicio, fim, horario, Periodicidade.DIARIA);
 		assertEquals(1, sessoes.size());
+		assertEquals(inicio.toDateTime(horario), sessoes.get(0).getInicio());
 		
 	}
+	
+	@Test
+	public void DeveCriarDuasSessoesDiariasHojeEAmanha() {
+		
+		Espetaculo show = new Espetaculo();
+		LocalDate inicio = new LocalDate(2013,10,20);
+		LocalDate fim = inicio.plusDays(1);
+		LocalTime horario = new LocalTime(19,0);
+		
+		List<Sessao> sessoes = show.criaSessoes(inicio, fim, horario, Periodicidade.DIARIA);
+		
+		assertEquals(2, sessoes.size());
+		assertEquals(inicio.toDateTime(horario), sessoes.get(0).getInicio());
+		assertEquals(fim.toDateTime(horario), sessoes.get(1).getInicio());
+		
+	}
+	
+	
 
 	private Sessao sessaoComIngressosSobrando(int quantidade) {
 		Sessao sessao = new Sessao();
