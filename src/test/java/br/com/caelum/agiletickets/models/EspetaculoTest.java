@@ -107,7 +107,17 @@ public class EspetaculoTest {
 		
 	}
 	
-	
+	@Test (expected = FimMenorQueInicioException.class)
+	public void DeveLancarExceptionSeFimMenorQueInicio() {
+		
+		Espetaculo show = new Espetaculo();
+		LocalDate inicio = new LocalDate(2013,10,20);
+		LocalDate fim = inicio.minusDays(1);
+		LocalTime horario = new LocalTime(19,0);
+		
+		List<Sessao> sessoes = show.criaSessoes(inicio, fim, horario, Periodicidade.DIARIA);
+		
+	}
 
 	private Sessao sessaoComIngressosSobrando(int quantidade) {
 		Sessao sessao = new Sessao();

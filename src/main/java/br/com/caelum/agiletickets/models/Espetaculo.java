@@ -99,6 +99,8 @@ public class Espetaculo {
       */
 	public List<Sessao> criaSessoes(LocalDate inicio, LocalDate fim, LocalTime horario, Periodicidade periodicidade) {
 
+		if (fim.isBefore(inicio)) throw new FimMenorQueInicioException();
+		
 		ArrayList<Sessao> sessoes = new ArrayList<Sessao>();
 		
 		for (int i = 0; i <= Days.daysBetween(inicio, fim).getDays() ; i++) {
