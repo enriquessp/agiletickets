@@ -29,8 +29,6 @@ public class EspetaculosController {
 	private final Agenda agenda;
 	private Validator validator;
 	private Result result;
-	private Estabelecimento estabelecimento;
-
 	private final DiretorioDeEstabelecimentos estabelecimentos;
 
 	public EspetaculosController(Agenda agenda, DiretorioDeEstabelecimentos estabelecimentos, Validator validator, Result result) {
@@ -49,30 +47,45 @@ public class EspetaculosController {
 
 	@Post @Path("/espetaculos")
 	public void adiciona(Espetaculo espetaculo) {
+		validaParametros(espetaculo);
+		agenda.cadastra(espetaculo);
+		result.redirectTo(this).lista();
+	}
+
+	private void validaParametros(Espetaculo espetaculo) {
 		// aqui eh onde fazemos as varias validacoes
 		// se nao tiver nome, avisa o usuario
 		// se nao tiver descricao, avisa o usuario
-		if (Strings.isNullOrEmpty(espetaculo.getNome())) {
-			validator.add(new ValidationMessage("Nome do espetáculo nao pode estar em branco", ""));
-		}
+		validaNome(espetaculo);
+		validaDescricao(espetaculo);
+		validator.onErrorRedirectTo(this).lista();
+	}
+
+	private void validaDescricao(Espetaculo espetaculo) {
 		if (Strings.isNullOrEmpty(espetaculo.getDescricao())) {
 			validator.add(new ValidationMessage("Descricao do espetaculo nao pode estar em branco", ""));
 		}
-		validator.onErrorRedirectTo(this).lista();
+	}
 
-		agenda.cadastra(espetaculo);
-		result.redirectTo(this).lista();
+	private void validaNome(Espetaculo espetaculo) {
+		if (Strings.isNullOrEmpty(espetaculo.getNome())) {
+			validator.add(new ValidationMessage("Nome do espetáculo nao pode estar em branco", ""));
+		}
 	}
 
 
 	@Get @Path("/sessao/{id}")
 	public void sessao(Long id) {
 		Sessao sessao = agenda.sessao(id);
+		isSessaoDisponivel(sessao);
+
+		result.include("sessao", sessao);
+	}
+
+	private void isSessaoDisponivel(Sessao sessao) {
 		if (sessao == null) {
 			result.notFound();
 		}
-
-		result.include("sessao", sessao);
 	}
 
 	@Post @Path("/sessao/{sessaoId}/reserva")
